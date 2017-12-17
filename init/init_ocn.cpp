@@ -29,12 +29,12 @@
 
 #include <stdlib.h>
 
-#include "vendor_init.h"
 #include "property_service.h"
 #include "log.h"
-#include "util.h"
 
 #include "init_htcCommon.h"
+
+#define PROP_VALUE_MAX 128
 
 void vendor_load_properties()
 {
