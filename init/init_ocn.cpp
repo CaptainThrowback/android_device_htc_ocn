@@ -34,8 +34,6 @@
 
 #include "init_htcCommon.h"
 
-#define PROP_VALUE_MAX 128
-
 void vendor_load_properties()
 {
     char platform[PROP_VALUE_MAX];
