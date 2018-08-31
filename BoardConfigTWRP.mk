@@ -26,13 +26,7 @@
 # CID: BS_US001, SPCS_001
 #
 
-# Vendor Init
 BOARD_VENDOR := htc
-TARGET_INIT_VENDOR_LIB := libinit_$(TARGET_DEVICE)
-TARGET_UNIFIED_DEVICE := true
-
-# Set recovery type
-RECOVERY_VARIANT := twrp
 
 # TWRP Build Flags
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
@@ -48,6 +42,11 @@ TARGET_RECOVERY_QCOM_RTC_FIX := true
 TARGET_RECOVERY_DEVICE_MODULES := chargeled tzdata
 TW_RECOVERY_ADDITIONAL_RELINK_FILES += $(TARGET_OUT)/usr/share/zoneinfo/tzdata
 TW_INPUT_BLACKLIST := "hbtp_vm"
+#TW_USE_TOOLBOX := true
+
+# Additional modules and relink files for resetprop
+TARGET_RECOVERY_DEVICE_MODULES += libicuuc libicui18n libsqlite
+TW_RECOVERY_ADDITIONAL_RELINK_FILES += $(OUT)/system/lib64/libicuuc.so $(OUT)/system/lib64/libicui18n.so $(OUT)/system/lib64/libsqlite.so
 
 # TWRP Debug Flags
 #TWRP_EVENT_LOGGING := true
