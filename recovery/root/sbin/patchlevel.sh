@@ -4,7 +4,7 @@ finish()
 {
 	umount /s
 	rmdir /s
-	setprop crypto.ready 1
+	setprop fde.ready 1
 	exit 0
 }
 
@@ -42,6 +42,9 @@ if [ -f /s/build.prop ]; then
 		resetprop ro.build.product "$product"
 		sed -i "s/ro.build.product=.*/ro.build.product="$product"/g" /prop.default ;
 	fi
+	if [ -f /s/lib/modules/texfat.ko ]; then
+		insmod /s/lib/modules/texfat.ko
+	fi
 	finish
 else
 	# Be sure to increase the PLATFORM_VERSION in build/core/version_defaults.mk to override Google's anti-rollback features to something rather insane
@@ -52,6 +55,9 @@ else
 	if [ ! -z "$patchlevel" ]; then
 		resetprop ro.build.version.security_patch "$patchlevel"
 		sed -i "s/ro.build.version.security_patch=.*/ro.build.version.security_patch="$patchlevel"/g" /prop.default ;
+	fi
+	if [ -f /s/lib/modules/texfat.ko ]; then
+		insmod /s/lib/modules/texfat.ko
 	fi
 	finish
 fi
