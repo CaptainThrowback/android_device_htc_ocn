@@ -1,6 +1,6 @@
 import /init.recovery.qcom_decrypt.rc
 
-on init
+on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
 
@@ -8,6 +8,7 @@ on init
     insmod /system/lib/modules/texfat.ko
 
 on boot
+	export LD_CONFIG_FILE /sbin/ld.config.txt
     start chargeled
 
 service chargeled /sbin/chargeled
@@ -22,4 +23,3 @@ service detect_key /sbin/detect_key
 service offmode_charging /sbin/offmode_charging
     disabled
     seclabel u:r:healthd:s0
-
