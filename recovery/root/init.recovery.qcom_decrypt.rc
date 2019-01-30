@@ -1,16 +1,18 @@
-on fs
+on early-init
     wait /dev/block/bootdevice
     start patchlevel
 
+on fs
     # needed to make qseecomd work in recovery
     chmod 0660 /dev/qseecom
     chown system drmrpc /dev/qseecom
     chmod 0664 /dev/ion
     chown system system /dev/ion
 
-on property:ro.crypto.state=encrypted
+on property:fde.ready=1
     start sbinhwservicemanager
-    start sbinservicemanager
+
+on property:ro.crypto.state=encrypted
     start sbinqseecomd
 
 on property:hwservicemanager.ready=true
@@ -20,7 +22,6 @@ on property:ro.crypto.fs_crypto_blkdev=*
     setprop fde.ready 0
     stop sbinqseecomd
     stop sbinhwservicemanager
-    stop sbinservicemanager
     stop sbinkeymaster-3-0
 
 service patchlevel /sbin/patchlevel.sh
@@ -43,12 +44,6 @@ service sbinhwservicemanager /sbin/hwservicemanager
     group root
     disabled
     onrestart setprop hwservicemanager.ready false
-    seclabel u:r:recovery:s0
-
-service sbinservicemanager /sbin/servicemanager
-    user root
-    group root
-    disabled
     seclabel u:r:recovery:s0
 
 service sbinkeymaster-3-0 /sbin/android.hardware.keymaster@3.0-service
