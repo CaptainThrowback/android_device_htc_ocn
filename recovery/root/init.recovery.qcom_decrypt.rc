@@ -2,6 +2,10 @@ on early-init
     wait /dev/block/bootdevice
     start patchlevel
 
+on property:fde.ready=1
+    start sbinqseecomd
+    start sbinhwservicemanager
+
 on fs
     # needed to make qseecomd work in recovery
     chmod 0660 /dev/qseecom
@@ -9,13 +13,7 @@ on fs
     chmod 0664 /dev/ion
     chown system system /dev/ion
 
-on property:fde.ready=1
-    start sbinhwservicemanager
-
-on property:ro.crypto.state=encrypted
-    start sbinqseecomd
-
-on property:hwservicemanager.ready=true
+on boot
     start sbinkeymaster-3-0
 
 on property:ro.crypto.fs_crypto_blkdev=*
@@ -35,6 +33,7 @@ service sbinqseecomd /sbin/qseecomd
     user root
     group root
     setenv LD_LIBRARY_PATH /vendor/lib64:/sbin
+    onrestart setprop sys.listeners.registered false
     disabled
     oneshot
     seclabel u:r:recovery:s0
