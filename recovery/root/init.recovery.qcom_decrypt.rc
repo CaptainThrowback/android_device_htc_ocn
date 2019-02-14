@@ -4,7 +4,10 @@ on early-init
 
 on property:fde.ready=1
     start sbinqseecomd
+
+on property:init.svc.sbinqseecomd=running && property:sys.listeners.registered=true
     start sbinhwservicemanager
+    start sbinservicemanager
 
 on fs
     # needed to make qseecomd work in recovery
@@ -13,13 +16,14 @@ on fs
     chmod 0664 /dev/ion
     chown system system /dev/ion
 
-on boot
+on property:init.svc.sbinhwservicemanager=running && property:hwservicemanager.ready=true
     start sbinkeymaster-3-0
 
 on property:ro.crypto.fs_crypto_blkdev=*
     setprop fde.ready 0
     stop sbinqseecomd
     stop sbinhwservicemanager
+    stop sbinservicemanager
     stop sbinkeymaster-3-0
 
 service patchlevel /sbin/patchlevel.sh
@@ -33,7 +37,6 @@ service sbinqseecomd /sbin/qseecomd
     user root
     group root
     setenv LD_LIBRARY_PATH /vendor/lib64:/sbin
-    onrestart setprop sys.listeners.registered false
     disabled
     oneshot
     seclabel u:r:recovery:s0
@@ -42,7 +45,12 @@ service sbinhwservicemanager /sbin/hwservicemanager
     user root
     group root
     disabled
-    onrestart setprop hwservicemanager.ready false
+    seclabel u:r:recovery:s0
+
+service sbinservicemanager /sbin/servicemanager
+    user root
+    group root
+    disabled
     seclabel u:r:recovery:s0
 
 service sbinkeymaster-3-0 /sbin/android.hardware.keymaster@3.0-service
